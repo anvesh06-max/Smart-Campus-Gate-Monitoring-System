@@ -1,5 +1,3 @@
-# Smart-Campus-Gate-Monitoring-System
-Gate Sync is a smart campus gate monitoring system that combines Train Information API, railway gate position sensing, CCTV, AI-based computer vision, and rule-based decision-making to monitor two campus entrances. It provides real-time gate status through a public web dashboard and sends email alerts for important events.
 # 🚦 Smart Campus Gate Monitoring System (Gate Sync)
 
 > A Hybrid **AI + Rule-Based** system that monitors a railway-crossing gate and an alternate campus gate in real time and publishes their status to a public dashboard with email alerts.
