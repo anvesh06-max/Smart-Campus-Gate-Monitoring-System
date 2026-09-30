@@ -85,7 +85,7 @@ CCTV (Alternate Gate) ─┘    ├─ AI Computer Vision                  └�
 | UPS, dual-WAN/4G router | Power and connectivity backup |
 | Cloud VPS, domain, SMTP service | Website and email |
 
-**Estimated cost:** ≈ ₹1.0 – 1.6 lakh one-time (field deployment) · ≈ ₹11,000 – 13,000 (bench prototype). _Prices are indicative estimates._
+
 
 ## ✅ Feasibility Summary
 
@@ -126,15 +126,7 @@ The virtual prototype was generated using **Claude (Anthropic)**, model Claude S
 
 </details>
 
-## 👥 Team and Peer Review
 
-| Team Member | Role |
-|---|---|
-| _[Name 1]_ | _[Role]_ |
-| _[Name 2]_ | _[Role]_ |
-| _[Name 3]_ | _[Role]_ |
-
-_Peer review table: see the project report._
 
 ## 📁 Repository Structure
 
