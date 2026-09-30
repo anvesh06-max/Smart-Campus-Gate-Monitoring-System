@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart Campus Gate Monitoring System – Virtual Prototype</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#16202c;--mute:#5d6b7a;--line:#c9d2dc;--acc:#1d6fd6;--ok:#14884a;--bad:#d23a3a;--warn:#d98a00;--ai:#7a3fd0;--rule:#0f8b8d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f151c;--card:#182129;--ink:#e6edf4;--mute:#98a6b5;--line:#33414f;--acc:#5aa2ff;--ok:#3ccf7d;--bad:#ff6b6b;--warn:#f5b437;--ai:#b58cff;--rule:#3cc9cb}}
+:root[data-theme="dark"]{--bg:#0f151c;--card:#182129;--ink:#e6edf4;--mute:#98a6b5;--line:#33414f;--acc:#5aa2ff;--ok:#3ccf7d;--bad:#ff6b6b;--warn:#f5b437;--ai:#b58cff;--rule:#3cc9cb}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0 0 2px}h2{font-size:15px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}
+.sub{color:var(--mute);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.scroll{overflow-x:auto}
+svg{width:100%;min-width:760px;height:auto;display:block}
+svg text{font-family:inherit;fill:var(--ink)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.t{font-size:13px;font-weight:600}.s{font-size:10.5px;fill:var(--mute)}
+.arr{fill:none;stroke:var(--acc);stroke-width:2;marker-end:url(#ah);stroke-dasharray:6 5;animation:f 1s linear infinite}
+.arr.dim{stroke:var(--line);animation:none}
+.arr.obs{stroke:var(--mute);stroke-width:1.3;animation:none;marker-end:url(#ahm)}
+@keyframes f{to{stroke-dashoffset:-11}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.gate{display:flex;justify-content:space-between;align-items:center;border-radius:10px;padding:14px 16px;margin-bottom:10px;color:#fff;font-weight:700;font-size:20px}
+.gate.OPEN{background:var(--ok)}.gate.CLOSED{background:var(--bad)}.gate.UNCERTAIN{background:var(--warn)}
+.gate small{font-weight:400;font-size:12px;opacity:.92;display:block}
+.banner{padding:10px 12px;border-radius:8px;border:1px solid var(--line);font-size:14px}
+.banner.crit{border-color:var(--bad);color:var(--bad);font-weight:600}.banner.info{border-color:var(--acc)}
+label{display:block;font-size:13px;color:var(--mute);margin:8px 0 3px}
+select,button{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%}
+button{background:var(--acc);color:#fff;border:0;font-weight:600;cursor:pointer;margin-top:10px}
+button.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.log{font-size:13px;max-height:230px;overflow:auto}
+.mail{border-left:3px solid var(--acc);padding:4px 8px;margin-bottom:6px;background:var(--bg);border-radius:4px}
+.mail.crit{border-color:var(--bad)}.mail b{display:block}
+.trace div{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;padding:2px 0}
+.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;color:#fff;margin-right:6px}
+.rl{background:var(--rule)}.ai{background:var(--ai)}
+.note{font-size:12.5px;color:var(--mute)}
+</style></head><body><div class="wrap">
+<h1>Smart Campus Gate Monitoring System</h1>
+<p class="sub">Engineering virtual prototype · Hybrid AI + Rule-Based architecture · interactive simulation</p>
+
+<div class="card"><h2>1 · System architecture &amp; data flow</h2><div class="scroll">
+<svg viewBox="0 0 1000 510" role="img" aria-label="System architecture diagram">
+<defs>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--acc)"/></marker>
+<marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--mute)"/></marker>
+</defs>
+<!-- Alternate gate + CCTV -->
+<rect class="box" x="30" y="20" width="210" height="75" rx="8"/>
+<text class="t" x="42" y="40">Alternate Gate</text><text class="s" x="42" y="54">Sliding / swing gate (physical)</text>
+<line x1="60" y1="78" x2="215" y2="78" stroke="var(--mute)" stroke-width="2"/>
+<rect id="altArm" x="150" y="66" width="60" height="7" rx="2" fill="var(--ok)"/>
+<text id="altLbl" class="s" x="42" y="70">state</text>
+<rect class="box" x="30" y="125" width="210" height="75" rx="8"/>
+<text class="t" x="42" y="146">CCTV (elevated camera)</text><text class="s" x="42" y="161">Pole-mounted, 1080p video stream</text><text class="s" x="42" y="176">RTSP / H.264 → frames</text>
+<path class="arr obs" d="M135 125 V97"/>
+<!-- Railway -->
+<rect class="box" x="30" y="235" width="210" height="75" rx="8"/>
+<text class="t" x="42" y="255">Railway Gate</text><text class="s" x="42" y="269">Level-crossing barrier</text>
+<line x1="60" y1="298" x2="215" y2="298" stroke="var(--mute)" stroke-width="2"/>
+<rect id="rlArm" x="150" y="286" width="60" height="7" rx="2" fill="var(--bad)"/>
+<rect class="box" x="30" y="335" width="210" height="75" rx="8"/>
+<text class="t" x="42" y="356">Position Sensor</text><text class="s" x="42" y="371">At gate closed-position contact point</text><text class="s" x="42" y="386">Contact: <tspan id="sensLbl" font-weight="700">CLOSED</tspan> · digital I/O</text>
+<path class="arr obs" d="M135 335 V312"/>
+<!-- API -->
+<rect class="box" x="30" y="430" width="210" height="70" rx="8"/>
+<text class="t" x="42" y="450">Train Information API</text><text class="s" x="42" y="465">REST/JSON · schedule + live ETA</text><text class="s" x="42" y="480">Train: <tspan id="apiLbl" font-weight="700">none</tspan></text>
+<!-- Computer -->
+<rect class="box" x="330" y="20" width="290" height="480" rx="10" stroke-width="2.5"/>
+<text class="t" x="345" y="42" style="font-size:15px">Central Computer with AI</text>
+<rect x="348" y="55" width="254" height="135" rx="8" fill="none" stroke="var(--ai)" stroke-width="2"/>
+<text class="t" x="360" y="76" style="fill:var(--ai)">AI Computer Vision</text>
+<text class="s" x="360" y="91">Frame capture → CNN classifier</text><text class="s" x="360" y="105">Classes: OPEN / CLOSED (+confidence)</text>
+<text class="t" x="360" y="140">Alternate Gate: <tspan id="aiOut">–</tspan></text><text class="s" x="360" y="157">Confidence: <tspan id="aiConf">–</tspan></text>
+<rect x="348" y="215" width="254" height="200" rx="8" fill="none" stroke="var(--rule)" stroke-width="2"/>
+<text class="t" x="360" y="236" style="fill:var(--rule)">Hybrid Rule-Based System</text>
+<text class="s" x="360" y="252">Sensor fusion + decision logic</text>
+<text class="s" x="360" y="272">R1 sensor contact → Railway state</text><text class="s" x="360" y="287">R2 train near + gate OPEN → CRITICAL</text>
+<text class="s" x="360" y="302">R3 AI conf &lt; 70% → UNCERTAIN, flag</text><text class="s" x="360" y="317">R4 both gates CLOSED → access blocked</text>
+<text class="s" x="360" y="332">R5 state change → event + email</text>
+<text class="t" x="360" y="372">Railway Gate: <tspan id="rlOut">–</tspan></text>
+<text class="t" x="360" y="392">Alert level: <tspan id="alOut">–</tspan></text>
+<rect x="348" y="435" width="254" height="50" rx="8" fill="none" stroke="var(--acc)" stroke-width="1.5"/>
+<text class="t" x="360" y="456">Status Publisher</text><text class="s" x="360" y="472">HTTPS POST / WebSocket · SMTP trigger</text>
+<path id="aiRule" class="arr" d="M475 190 V213"/><path id="ruleOut" class="arr" d="M475 415 V433"/>
+<!-- inbound -->
+<path id="pCctv" class="arr" d="M240 162 H290 V122 H346"/>
+<path id="pSens" class="arr" d="M240 372 H346"/>
+<path id="pApi" class="arr" d="M240 465 H290 V395 H346"/>
+<text class="s" x="252" y="156">video</text><text class="s" x="252" y="366">contact</text><text class="s" x="252" y="459">train JSON</text>
+<!-- outbound -->
+<path class="arr" d="M602 460 H735 V312"/>
+<path class="arr" d="M790 262 H815 V150 H832"/>
+<path class="arr" d="M790 290 H815 V405 H832"/>
+<ellipse class="box" cx="735" cy="275" rx="58" ry="36"/>
+<text class="t" x="735" y="272" text-anchor="middle">Internet /</text><text class="t" x="735" y="288" text-anchor="middle">Network</text>
+<text class="s" x="740" y="445">HTTPS / TLS</text>
+<!-- website -->
+<rect class="box" x="832" y="40" width="158" height="215" rx="8"/>
+<text class="t" x="844" y="62">Website</text><text class="s" x="844" y="76">Public dashboard</text>
+<rect x="844" y="90" width="134" height="40" rx="5" id="wRl"/><text x="850" y="106" class="s" style="fill:#fff">Railway Gate:</text><text id="wRlT" x="850" y="123" style="fill:#fff;font-size:14px;font-weight:700">–</text>
+<rect x="844" y="140" width="134" height="40" rx="5" id="wAl"/><text x="850" y="156" class="s" style="fill:#fff">Alternate Gate:</text><text id="wAlT" x="850" y="173" style="fill:#fff;font-size:14px;font-weight:700">–</text>
+<text class="s" x="844" y="205">Real-time · auto-refresh 2 s</text><text class="s" x="844" y="220">Train ETA + alerts banner</text><text class="s" x="844" y="235">Visitors: browser / mobile</text>
+<!-- email -->
+<rect class="box" x="832" y="340" width="158" height="130" rx="8"/>
+<text class="t" x="844" y="362">Email</text><text class="s" x="844" y="376">SMTP notification service</text>
+<text class="s" x="844" y="396">• Train approaching</text><text class="s" x="844" y="410">• Gate state changed</text><text class="s" x="844" y="424">• Critical: gate OPEN</text><text class="s" x="844" y="438">• Low AI confidence</text>
+<text class="s" x="844" y="458">Sent: <tspan id="mailCnt" font-weight="700">0</tspan></text>
+</svg></div>
+<p class="note">Animated dashed arrows = live data flow. Solid grey arrows = physical observation (sensor contact / camera view). Use the controls below to drive the simulation.</p></div>
+
+<div class="grid">
+<div class="card"><h2>2 · Simulation inputs</h2>
+<label for="train">Train Information API</label>
+<select id="train"><option value="none">No train in range</option><option value="approach">Train approaching (ETA 3 min)</option><option value="crossing">Train at crossing</option><option value="passed">Train passed</option></select>
+<label for="sens">Position sensor (railway gate)</label>
+<select id="sens"><option value="OPEN">Contact open (gate not closed)</option><option value="CLOSED">Contact closed (gate closed)</option></select>
+<label for="alt">Alternate gate (physical state seen by CCTV)</label>
+<select id="alt"><option value="OPEN">Open</option><option value="CLOSED">Closed</option></select>
+<label for="cond">Camera conditions</label>
+<select id="cond"><option value="good">Clear daylight</option><option value="poor">Night / fog / glare (low confidence)</option></select>
+<button id="run">▶ Run train-crossing scenario</button><button id="rst" class="sec">Reset</button></div>
+
+<div class="card"><h2>3 · Public dashboard (Website)</h2>
+<div id="gRl" class="gate"></div><div id="gAl" class="gate"></div>
+<div id="ban" class="banner info"></div>
+<p class="note" id="stamp" style="margin:8px 0 0"></p></div></div>
+
+<div class="grid">
+<div class="card"><h2>4 · Rule engine trace</h2><div class="trace" id="trace"></div></div>
+<div class="card"><h2>5 · Email notifications</h2><div class="log" id="mails"><span class="note">No emails yet. Change an input to trigger events.</span></div></div></div>
+
+<div class="card"><h2>Engineering notes</h2>
+<p class="note" style="margin:0"><span class="tag ai">AI</span>Handles perception: a CNN classifies each CCTV frame as OPEN/CLOSED with a confidence score; uncertain frames are never silently trusted. <span class="tag rl">RULES</span>Handle decisions: deterministic, auditable logic fuses the API train state, the sensor contact, and the AI output. The railway gate status is derived from the sensor (most reliable) cross-checked with train data; the alternate gate status comes from the vision model. Suggested hardware: industrial PC with GPU/NPU, PoE camera, isolated digital input for the contact sensor, UPS power, and a cloud-hosted dashboard behind TLS. Note: this is a monitoring concept, not a safety-rated interlock for the crossing itself.</p></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let prev=null,mails=0,timers=[];
+const tl={none:"No train",approach:"Approaching (ETA 3 min)",crossing:"At crossing",passed:"Passed"};
+function compute(){
+ const train=$("train").value,sens=$("sens").value,alt=$("alt").value,poor=$("cond").value==="poor";
+ const conf=poor?0.62:0.97;
+ const aiState=conf<0.7?"UNCERTAIN":alt;
+ const rl=sens; const tr=[];
+ tr.push(["ai","AI: frame → "+alt+" @ "+Math.round(conf*100)+"%"]);
+ tr.push(["rl","R1: contact "+sens+" → Railway "+rl]);
+ let level="NORMAL",msg="All clear. Both gates operating normally.";
+ const near=train==="approach"||train==="crossing";
+ if(aiState==="UNCERTAIN"){tr.push(["rl","R3: confidence <70% → Alternate UNCERTAIN, flag for review"]);level="CAUTION";msg="Alternate gate status unverified (low camera confidence).";}
+ if(near&&rl==="OPEN"){tr.push(["rl","R2: train "+train+" AND gate OPEN → CRITICAL"]);level="CRITICAL";msg="WARNING: train "+(train==="crossing"?"at crossing":"approaching")+" but railway gate is OPEN.";}
+ else if(near){tr.push(["rl","R2: train near, gate CLOSED → OK"]);if(level==="NORMAL"){level="TRAIN";msg="Train "+(train==="crossing"?"at crossing":"approaching")+". Railway gate closed. Use alternate gate.";}}
+ if(rl==="CLOSED"&&aiState==="CLOSED"){tr.push(["rl","R4: both gates CLOSED → campus access blocked"]);level="CRITICAL";msg="Both campus entrances are closed.";}
+ if(train==="passed"&&rl==="CLOSED"){tr.push(["rl","R6: train passed, gate still closed → awaiting reopen"]);}
+ return{train,sens,alt,conf,aiState,rl,level,msg,tr};
+}
+function mail(subj,body,crit){mails++;$("mailCnt").textContent=mails;
+ const l=$("mails");if(mails===1)l.innerHTML="";
+ const d=document.createElement("div");d.className="mail"+(crit?" crit":"");
+ d.innerHTML="<b>"+subj+"</b>"+body+"<div class='note'>To: campus-security@example.edu · "+new Date().toLocaleTimeString()+"</div>";l.prepend(d);}
+function render(){
+ const s=compute();
+ $("altArm").setAttribute("fill",s.alt==="OPEN"?"var(--ok)":"var(--bad)");
+ $("altArm").setAttribute("transform",s.alt==="OPEN"?"rotate(-70 150 70)":"");
+ $("rlArm").setAttribute("fill",s.rl==="OPEN"?"var(--ok)":"var(--bad)");
+ $("rlArm").setAttribute("transform",s.rl==="OPEN"?"rotate(-70 150 290)":"");
+ $("altLbl").textContent="";
+ $("sensLbl").textContent=s.sens;$("apiLbl").textContent=tl[s.train];
+ $("aiOut").textContent=s.aiState;$("aiConf").textContent=Math.round(s.conf*100)+"%";
+ $("rlOut").textContent=s.rl;$("alOut").textContent=s.level;
+ const col=v=>v==="OPEN"?"var(--ok)":v==="CLOSED"?"var(--bad)":"var(--warn)";
+ $("wRl").setAttribute("fill",col(s.rl));$("wAl").setAttribute("fill",col(s.aiState));
+ $("wRlT").textContent=s.rl;$("wAlT").textContent=s.aiState;
+ const g=(el,n,v,sub)=>{el.className="gate "+v;el.innerHTML="<span>"+n+": "+v+"<small>"+sub+"</small></span><span>"+(v==="OPEN"?"🟢":v==="CLOSED"?"🔴":"🟡")+"</span>";};
+ g($("gRl"),"Railway Gate",s.rl,"Source: position sensor + train API");
+ g($("gAl"),"Alternate Gate",s.aiState,"Source: CCTV + AI vision ("+Math.round(s.conf*100)+"%)");
+ $("ban").className="banner "+(s.level==="CRITICAL"?"crit":"info");$("ban").textContent="Train: "+tl[s.train]+" — "+s.msg;
+ $("stamp").textContent="Last update: "+new Date().toLocaleTimeString();
+ $("trace").innerHTML=s.tr.map(t=>"<div><span class='tag "+t[0]+"'>"+(t[0]==="ai"?"AI":"RULE")+"</span>"+t[1]+"</div>").join("");
+ // events (R5)
+ if(prev){
+  if(prev.train!==s.train&&s.train==="approach")mail("Train approaching","Train ETA 3 min. Railway gate is "+s.rl+".",false);
+  if(prev.train!==s.train&&s.train==="passed")mail("Train has passed","Railway gate may reopen.",false);
+  if(prev.rl!==s.rl)mail("Railway Gate now "+s.rl,"Detected by position sensor.",false);
+  if(prev.aiState!==s.aiState)mail("Alternate Gate now "+s.aiState,"Classified by CCTV AI ("+Math.round(s.conf*100)+"% confidence).",s.aiState==="UNCERTAIN");
+  if(prev.level!==s.level&&s.level==="CRITICAL")mail("CRITICAL: "+s.msg,"Immediate attention required.",true);
+ }
+ prev=s;
+}
+["train","sens","alt","cond"].forEach(i=>$(i).addEventListener("change",render));
+function clr(){timers.forEach(clearTimeout);timers=[];}
+$("rst").onclick=()=>{clr();$("train").value="none";$("sens").value="OPEN";$("alt").value="OPEN";$("cond").value="good";render();};
+$("run").onclick=()=>{clr();$("rst").click();
+ const st=[[500,"train","approach"],[2500,"sens","CLOSED"],[4500,"train","crossing"],[7000,"train","passed"],[8500,"sens","OPEN"],[9500,"train","none"]];
+ st.forEach(([t,k,v])=>timers.push(setTimeout(()=>{$(k).value=v;render();},t)));};
+render();
+</script></body></html>
